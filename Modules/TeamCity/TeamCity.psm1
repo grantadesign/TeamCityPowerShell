@@ -282,7 +282,8 @@ Function Get-ArtifactsByBuildId
 	)
 	
 	$baseUrl = New-TeamCityUrl @PSBoundParameters
-	$url = $baseUrl + ("/httpAuth/downloadArtifacts.html?buildId={0}" -f $BuildId)
+	$auth = @{$true = "/guestAuth"; $false = "/httpAuth"}[$connectionDetails.IsGuest]
+	$url = $baseUrl + $auth + ("/downloadArtifacts.html?buildId={0}" -f $BuildId)
 	
 	$connection = New-TeamCityWebClientConnection @PSBoundParameters
 	
@@ -310,7 +311,8 @@ Function Get-ArtifactByBuildNumber
 	)
 	
 	$baseUrl = New-TeamCityUrl @PSBoundParameters
-	$url = $baseUrl + ("/repository/download/{0}/{1}/{2}" -f $BuildConfigId, $BuildNumber, $ArtifactName)
+	$auth = @{$true = "/guestAuth"; $false = "/httpAuth"}[$connectionDetails.IsGuest]
+	$url = $baseUrl + $auth + ("/repository/download/{0}/{1}/{2}" -f $BuildConfigId, $BuildNumber, $ArtifactName)
 	
 	$connection = New-TeamCityWebClientConnection @PSBoundParameters
 	
@@ -337,8 +339,9 @@ Function Get-Artifact
 		$SavePath
 	)
 	
-    $baseUrl = New-TeamCityUrl @PSBoundParameters
-	$url = $baseUrl + "/httpAuth/repository/download/{0}/{1}:id/{2}" -f $BuildConfigId, $BuildId, $ArtifactName
+	$baseUrl = New-TeamCityUrl @PSBoundParameters
+	$auth = @{$true = "/guestAuth"; $false = "/httpAuth"}[$connectionDetails.IsGuest]
+	$url = $baseUrl + $auth + "/repository/download/{0}/{1}:id/{2}" -f $BuildConfigId, $BuildId, $ArtifactName
 	
 	$connection = New-TeamCityWebClientConnection @PSBoundParameters
 	$connection.DownloadFile($url, $SavePath)
@@ -362,7 +365,8 @@ Function Get-LatestArtifact
 	)
 	
 	$baseUrl = New-TeamCityUrl @PSBoundParameters
-	$url = $baseUrl + "/httpAuth/repository/download/{0}/.lastFinished/{1}" -f $BuildConfigId, $ArtifactName
+	$auth = @{$true = "/guestAuth"; $false = "/httpAuth"}[$connectionDetails.IsGuest]
+	$url = $baseUrl + $auth + "/repository/download/{0}/.lastFinished/{1}" -f $BuildConfigId, $ArtifactName
 	
 	$connection = New-TeamCityWebClientConnection @PSBoundParameters
 	$connection.DownloadFile($url, $SavePath)
@@ -386,7 +390,8 @@ Function Get-ArtifactsAsArchive
 	)
 	
 	$baseUrl = New-TeamCityUrl @PSBoundParameters
-	$url = $baseUrl + "/repository/downloadAll/{0}/{1}:id" -f $BuildConfigId, $BuildId
+	$auth = @{$true = "/guestAuth"; $false = "/httpAuth"}[$connectionDetails.IsGuest]
+	$url = $baseUrl + $auth + "/repository/downloadAll/{0}/{1}:id" -f $BuildConfigId, $BuildId
 	
 	$connection = New-TeamCityWebClientConnection @PSBoundParameters
 	$connection.DownloadFile($url, $SavePath)
