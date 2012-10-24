@@ -372,6 +372,34 @@ Function Get-LatestArtifact
 	$connection.DownloadFile($url, $SavePath)
 }
 
+Function Get-ArtifactByTag
+{
+	param
+	(
+		[Hashtable]
+		$ConnectionDetails,
+		
+		[string]
+		$BuildConfigId,
+		
+		[string]
+		$BuildTag,
+		
+		[string]
+		$ArtifactName,
+		
+		[string]
+		$SavePath
+	)
+	
+	$baseUrl = New-TeamCityUrl @PSBoundParameters
+	$auth = @{$true = "/guestAuth"; $false = "/httpAuth"}[$connectionDetails.IsGuest]
+	$url = $baseUrl + $auth + "/repository/download/{0}/{1}.tcbuildtag/{2}" -f $BuildConfigId, $BuildTag, $ArtifactName
+	
+	$connection = New-TeamCityWebClientConnection @PSBoundParameters
+	$connection.DownloadFile($url, $SavePath)
+}
+
 Function Get-ArtifactsAsArchive
 {
 	param
